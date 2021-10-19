@@ -3,12 +3,12 @@
 This is an exercise implementation of continuous Galerkin solver for 1D unsteady diffusion problem. 
 
 Modal problem:
+
 <a href="https://www.codecogs.com/eqnedit.php?latex=\partial&space;p&space;/&space;\partial&space;t&space;-&space;\partial^2&space;p&space;/&space;\partial&space;x^2&space;=&space;f(x,t)&space;\quad&space;\text{in&space;}&space;\Omega&space;\times&space;[0,t_{end})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\partial&space;p&space;/&space;\partial&space;t&space;-&space;\partial^2&space;p&space;/&space;\partial&space;x^2&space;=&space;f(x,t)&space;\quad&space;\text{in&space;}&space;\Omega&space;\times&space;[0,t_{end})" title="\partial p / \partial t - \partial^2 p / \partial x^2 = f(x,t) \quad \text{in } \Omega \times [0,t_{end})" /></a>
-https://latex.codecogs.com/gif.latex?\partial&space;p&space;/&space;\partial&space;t&space;-&space;\partial^2&space;p&space;/&space;\partial&space;x^2&space;=&space;f(x,t)&space;\quad&space;\text{in&space;}&space;\Omega&space;\times&space;[0,t_{end})
-https://latex.codecogs.com/gif.latex?%5Cpartial%20p%20/%20%5Cpartial%20t%20-%20%5Cpartial%5E2%20p%20/%20%5Cpartial%20x%5E2%20%3D%20f%28x%2Ct%29%20%5Cquad%20%5Ctext%7Bin%20%7D%20%5COmega%20%5Ctimes%20%5B0%2Ct_%7Bend%7D%29
-- <img src="https://latex.codecogs.com/gif.latex?\partial p / \partial t - \partial^2 p / \partial x^2 = f(x,t) \quad \text{in} \Omega \times [0,t_{end})" /> 
-- <img src="https://latex.codecogs.com/gif.latex?p = 0 \quad \text{on } \partial\Omega \times [0,t_{end})" /> 
-- <img src="https://latex.codecogs.com/gif.latex?p(x) = 0 in \Omega \times {0}" /> 
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=p&space;=&space;0&space;\quad&space;\text{on&space;}&space;\partial\Omega&space;\times&space;[0,t_{end})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p&space;=&space;0&space;\quad&space;\text{on&space;}&space;\partial\Omega&space;\times&space;[0,t_{end})" title="p = 0 \quad \text{on } \partial\Omega \times [0,t_{end})" /></a>
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=p(x)&space;=&space;0&space;\quad\text{in&space;}&space;\Omega&space;\times&space;\{0\}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x)&space;=&space;0&space;\quad\text{in&space;}&space;\Omega&space;\times&space;\{0\}" title="p(x) = 0 \quad\text{in } \Omega \times \{0\}" /></a>
 
 Element: linear CG element
 
