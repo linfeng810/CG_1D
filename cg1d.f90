@@ -1,7 +1,7 @@
 
 program dg_1d
     implicit none 
-    integer, parameter:: ngi=2,nloc=2,nele=10,nnod=nele+1
+    integer, parameter:: ngi=2,nloc=2,nele=100,nnod=nele+1
     real :: Mmat(nnod,nnod), Gmat(nnod,nnod), f(nnod), &
             phin(nnod), phin1(nnod) ! phin1 is phi^(n-1) - last step value
     real :: A(nnod,nnod), b(nnod), rhs(nnod) ! A x = rhs, rhs = b + explicit term
@@ -26,8 +26,8 @@ program dg_1d
     enddo
 
     ! time
-    tend = 10.
-    tstep = 0.1
+    tend = 2.
+    tstep = 0.01
     tstot = ceiling(tend/tstep)
 
     ! shape function on reference element 
@@ -68,15 +68,11 @@ program dg_1d
     b = matmul(Mmat, f) 
     ! print*, b
 
-    ! Dirichlet boundary (assuming both ends are Diri. b.c.)
-    Gmat(1,:)=0.;       Gmat(:,1)=0.;       Gmat(1,1)=1.;
-    Gmat(nnod,:)=0.;    Gmat(:,nnod)=0.;    Gmat(nnod,nnod)=1.;
-    b(1)=0.;            b(nnod)=0.;
-
+    
     ! time loop
     phin1 = 0.  ! initial condition
     phin  = 0.  ! initiallizing vector
-
+    
     open(unit=30, file='results.out', status='replace')
     do ts = 1, tstot
         A = Mmat/tstep + Gmat
@@ -90,6 +86,11 @@ program dg_1d
             close(10); close(20);
         endif
         rhs = b + matmul(Mmat, phin1) / tstep 
+        ! Dirichlet boundary (assuming both ends are Diri. b.c.)
+        A(1,:)=0.;       A(:,1)=0.;       A(1,1)=1.;
+        A(nnod,:)=0.;    A(:,nnod)=0.;    A(nnod,nnod)=1.;
+        rhs(1)=0.;            rhs(nnod)=0.;
+
         call linsol(A, rhs, phin, nnod)
         ! write out 
         write(30,*) ts*tstep, phin
