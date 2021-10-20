@@ -5,7 +5,8 @@ program dg_1d
     real :: Mmat(nnod,nnod), Gmat(nnod,nnod), f(nnod), &
             phin(nnod), phin1(nnod) ! phin1 is phi^(n-1) - last step value
     real :: A(nnod,nnod), b(nnod), rhs(nnod) ! A x = rhs, rhs = b + explicit term
-    real :: Lend(2) ! coordinates of domain ends
+    real :: Lend(2) , & ! coordinates of domain ends
+            gd(2)       ! Dirichlet boundary conditions
     real :: coor(nnod) ! coordinates of nodal points
     real :: elength ! length of element
     integer :: inod, jnod, & ! local node index
@@ -19,7 +20,7 @@ program dg_1d
     real :: tend , tstep    ! end time and time step size
 
     ! geometry
-    Lend = (/0., 1./)
+    Lend = (/1., 2./)
     elength = (Lend(2) - Lend(1))/nele 
     do globi = 1, nnod
         coor(globi) = Lend(1) + real(globi-1) * elength
@@ -29,6 +30,16 @@ program dg_1d
     tend = 2.
     tstep = 0.01
     tstot = ceiling(tend/tstep)
+
+    ! b.c.
+    gd = (/2., 3./)
+
+    ! initial condition
+    ! assuming linear from left end Diri. b.c. to right end Diri. b.c.
+    phin1 = (coor - Lend(1)) * (gd(2) - gd(1)) / (Lend(2) - Lend(1)) + gd(1)
+
+    ! source term
+    f = 10.
 
     ! shape function on reference element 
     ! use 1st order quadrature, 2 point, weight = 1
@@ -64,13 +75,12 @@ program dg_1d
     enddo
 
     ! rhs 
-    f = 1.
     b = matmul(Mmat, f) 
     ! print*, b
 
     
     ! time loop
-    phin1 = 0.  ! initial condition
+    !phin1 = 2.  ! initial condition == defined above
     phin  = 0.  ! initiallizing vector
     
     open(unit=30, file='results.out', status='replace')
@@ -87,9 +97,20 @@ program dg_1d
         endif
         rhs = b + matmul(Mmat, phin1) / tstep 
         ! Dirichlet boundary (assuming both ends are Diri. b.c.)
+        do ele = 1,nele
+            if (ele .eq. 1) then 
+                rhs(1) = gd(1)
+                rhs(2) = rhs(2) - A(2,1) * gd(1)
+            elseif (ele .eq. nele) then
+                rhs(nnod) = gd(2)
+                rhs(nnod-1) = rhs(nnod-1) - A(nnod-1,nnod) * gd(2)
+            else
+                CYCLE
+            endif
+        enddo
         A(1,:)=0.;       A(:,1)=0.;       A(1,1)=1.;
         A(nnod,:)=0.;    A(:,nnod)=0.;    A(nnod,nnod)=1.;
-        rhs(1)=0.;            rhs(nnod)=0.;
+        rhs(1)=gd(1);            rhs(nnod)=gd(2);
 
         call linsol(A, rhs, phin, nnod)
         ! write out 
